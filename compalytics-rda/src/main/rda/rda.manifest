@@ -1,0 +1,62 @@
+{
+    "appKey": "bdp.compalytics${rda.personal.suffix}",
+    "description": "Compalytics${rda.personal.suffix}",
+    "name": "Compalytics${rda.personal.suffix}",
+    "version": "${project.version}",
+    "components": [
+        {
+            "name": "Compalytics Consul Keyspace",
+            "description": "A keyspace for holding dynamic configurations for Compalytics.",
+            "type": "consul-keyspace",
+            "properties": {
+                "package": {
+                    "keyspace.location": "{{{keyspace.location}}}",
+                    "keyspace.token": "{{{keyspace.token}}}"
+                }
+            }
+        },
+        {
+            "name": "Compalytics PostgreSQL Database",
+            "type": "postgresql",
+            "properties": {
+                "package": {
+                    "compalytics.database.url": "jdbc:postgresql://{{{bdp:postgresql.servers}}}/compalytics${rda.personal.suffix}",
+                    "compalytics.database.username": "{{{postgresql.username}}}",
+                    "compalytics.database.password": "{{{postgresql.password}}}"
+                }
+            },
+            "config": {
+                "databases": [
+                    {
+                        "create": true,
+                        "name": "compalytics${rda.personal.suffix}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Compalytics",
+            "description": "Compalytics",
+            "type": "servlet",
+            "properties": {
+                "public": {
+                    "compalytics${rda.personal.suffix}.location": "{{{bdp:proxy.url}}}/compalytics${rda.personal.suffix}"
+                }
+            },
+            "config": {
+                "context": "/compalytics${rda.personal.suffix}",
+                "webapp": "webapps/compalytics.war",
+                "resources": [
+                    {
+                        "src": "compalytics.properties",
+                        "template": true
+                    },
+                    {
+                        "src": "log4j.properties",
+                        "template": true
+                    }
+                ]
+            }
+        }
+    ]
+}
