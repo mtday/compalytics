@@ -1,9 +1,9 @@
-package bdp.compalytics.app.api.v1.jobs.runs;
+package bdp.compalytics.app.api.v1.jobs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import bdp.compalytics.db.DaoFactory;
-import bdp.compalytics.model.JobRun;
+import bdp.compalytics.model.Job;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,21 +14,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/runs/{id}")
+@Path("/api/v1/jobs/{id}")
 @Produces(APPLICATION_JSON)
-public class RunPut {
+public class JobPut {
     private final DaoFactory daoFactory;
 
     @Inject
-    public RunPut(DaoFactory daoFactory) {
+    public JobPut(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
 
     @PUT
-    public Response saveRun(@PathParam("jobId") String jobId, @PathParam("id") String id, JobRun run) {
-        run.setJobId(jobId);
-        run.setId(id);
-        daoFactory.getJobRunDao().save(run);
-        return Response.accepted(run).build();
+    public Response saveJob(@PathParam("id") String id, Job job) {
+        job.setId(id);
+        daoFactory.getJobDao().save(job);
+        return Response.accepted(job).build();
     }
 }

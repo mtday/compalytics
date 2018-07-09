@@ -1,10 +1,9 @@
 package bdp.compalytics.model;
 
-import java.util.Objects;
-
 public class Job {
     private String id;
     private String name;
+    private JobState state;
 
     public String getId() {
         return id;
@@ -22,29 +21,11 @@ public class Job {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Job)) {
-            return false;
-        }
-        final Job job = (Job) o;
-        return Objects.equals(getId(), job.getId()) &&
-                Objects.equals(getName(), job.getName());
+    public JobState getState() {
+        return state;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName());
-    }
-
-    @Override
-    public String toString() {
-        return "Job{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+    public void setState(JobState state) {
+        this.state = state;
     }
 }

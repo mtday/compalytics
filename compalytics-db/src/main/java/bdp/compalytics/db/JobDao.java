@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface JobDao {
     Optional<Job> get(String id);
     List<Job> getAll();
+    void save(Job job);
+    void delete(String id);
 }

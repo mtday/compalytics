@@ -1,9 +1,9 @@
-package bdp.compalytics.app.api.v1.jobs.runs;
+package bdp.compalytics.app.api.v1.jobs.edges;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import bdp.compalytics.db.DaoFactory;
-import bdp.compalytics.model.JobRun;
+import bdp.compalytics.model.Edge;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,21 +14,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/runs/{id}")
+@Path("/api/v1/jobs/{jobId}/edges/{id}")
 @Produces(APPLICATION_JSON)
-public class RunPut {
+public class EdgePut {
     private final DaoFactory daoFactory;
 
     @Inject
-    public RunPut(DaoFactory daoFactory) {
+    public EdgePut(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
 
     @PUT
-    public Response saveRun(@PathParam("jobId") String jobId, @PathParam("id") String id, JobRun run) {
-        run.setJobId(jobId);
-        run.setId(id);
-        daoFactory.getJobRunDao().save(run);
-        return Response.accepted(run).build();
+    public Response saveEdge(@PathParam("jobId") String jobId, @PathParam("id") String id, Edge edge) {
+        edge.setJobId(jobId);
+        edge.setId(id);
+        daoFactory.getEdgeDao().save(edge);
+        return Response.accepted(edge).build();
     }
 }

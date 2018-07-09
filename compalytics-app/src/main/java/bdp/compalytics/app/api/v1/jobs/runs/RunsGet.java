@@ -1,34 +1,32 @@
 package bdp.compalytics.app.api.v1.jobs.runs;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static javax.ws.rs.core.Response.ok;
 
 import bdp.compalytics.db.DaoFactory;
-import bdp.compalytics.model.JobRun;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.PUT;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/runs/{id}")
+@Path("/api/v1/jobs/{jobId}/runs")
 @Produces(APPLICATION_JSON)
-public class RunPut {
+public class RunsGet {
     private final DaoFactory daoFactory;
 
     @Inject
-    public RunPut(DaoFactory daoFactory) {
+    public RunsGet(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
 
-    @PUT
-    public Response saveRun(@PathParam("jobId") String jobId, @PathParam("id") String id, JobRun run) {
-        run.setJobId(jobId);
-        run.setId(id);
-        daoFactory.getJobRunDao().save(run);
-        return Response.accepted(run).build();
+    @GET
+    public Response getRunsForJob(@PathParam("jobId") String jobId) {
+        return ok().entity(daoFactory.getJobRunDao().getAll(jobId)).type(APPLICATION_JSON_TYPE).build();
     }
 }
