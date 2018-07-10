@@ -30,7 +30,7 @@ public class VersionGet {
     public Response getVersion() {
         Version version = new Version();
         version.setName("Compalytics");
-        version.setVersion(properties.getProperty("compalytics.version"));
+        version.setVersion(properties.getProperty("compalytics.version", "UNKNOWN"));
         return ok().entity(version).type(APPLICATION_JSON_TYPE).build();
     }
 }

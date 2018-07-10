@@ -27,8 +27,6 @@ public class JdbcNodeDaoTest {
     public static void setup() {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:" + JdbcNodeDaoTest.class.getSimpleName() + ";DB_CLOSE_DELAY=-1");
-        dataSource.setUser("sa");
-        dataSource.setPassword("sa");
 
         DaoFactory daoFactory = new DaoFactory(dataSource);
         jobDao = daoFactory.getJobDao();

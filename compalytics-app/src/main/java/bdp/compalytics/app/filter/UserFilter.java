@@ -1,12 +1,17 @@
 package bdp.compalytics.app.filter;
 
+import static bdp.citadel.core.model.AttributeType.AUTH;
+import static bdp.citadel.core.model.AttributeType.NAME;
+import static bdp.citadel.core.model.AttributeType.ROLE;
 import static bdp.citadel.core.model.SecurityHeader.BDP_USER;
 import static bdp.citadel.core.model.SecurityHeader.BDP_USER_SIGNATURE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 import bdp.citadel.core.model.User;
+import bdp.citadel.core.model.UserAttribute;
 import bdp.citadel.core.model.UserSerializer;
 import bdp.citadel.signature.Verifier;
 import bdp.citadel.signature.VerifierFactory;
@@ -29,50 +34,68 @@ import javax.ws.rs.container.ContainerRequestFilter;
 public class UserFilter implements ContainerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserFilter.class);
 
+    private final boolean securityEnabled;
     private final VerifierFactory verifierFactory;
     private final UserSerializer userSerializer = new UserSerializer();
 
     @Inject
     public UserFilter(Properties properties) {
-        verifierFactory = ofNullable(properties.getProperty("citadel.signature.cert"))
-                .map(cert -> {
-                    try {
-                        return new DefaultVerifierFactory(cert);
-                    } catch (KeyStoreException keyStoreException) {
-                        throw new RuntimeException("Failed to load citadel verifier", keyStoreException);
-                    }
-                })
-                .orElse(null);
+        securityEnabled = ofNullable(properties.getProperty("citadel.security.enabled", "false"))
+                .map(Boolean::valueOf).orElse(false);
+
+        if (securityEnabled) {
+            verifierFactory = ofNullable(properties.getProperty("citadel.signature.cert"))
+                    .map(cert -> {
+                        try {
+                            return new DefaultVerifierFactory(cert);
+                        } catch (KeyStoreException keyStoreException) {
+                            throw new RuntimeException("Failed to load citadel verifier", keyStoreException);
+                        }
+                    })
+                    .orElse(null);
+        } else {
+            verifierFactory = null;
+        }
     }
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) {
-        String serializedUser = containerRequestContext.getHeaderString(BDP_USER.getHeader());
-        User user = ofNullable(serializedUser)
-                .map(userSerializer::getDeserializedUser)
-                .orElseGet(() -> new User(emptyList()));
+        if (securityEnabled) {
+            String serializedUser = containerRequestContext.getHeaderString(BDP_USER.getHeader());
+            User user = ofNullable(serializedUser)
+                    .map(userSerializer::getDeserializedUser)
+                    .orElseGet(() -> new User(emptyList()));
 
-        if (serializedUser != null && verifierFactory != null) {
-            String serializedSignature = containerRequestContext.getHeaderString(BDP_USER_SIGNATURE.getHeader());
-            if (serializedSignature == null) {
-                LOGGER.error("Signature verification failed due to missing signature");
-                user = new User(emptyList());
-            } else {
-                try {
-                    final Signature signature = Signature.deserialize(serializedSignature);
-                    final Verifier verifier = this.verifierFactory.getVerifier(signature);
-                    final boolean verified = verifier.verify(serializedUser, UTF_8, signature);
-                    if (!verified) {
-                        LOGGER.error("Signature verification failed due to invalid signature.");
+            if (serializedUser != null && verifierFactory != null) {
+                String serializedSignature = containerRequestContext.getHeaderString(BDP_USER_SIGNATURE.getHeader());
+                if (serializedSignature == null) {
+                    LOGGER.error("Signature verification failed due to missing signature");
+                    user = new User(emptyList());
+                } else {
+                    try {
+                        final Signature signature = Signature.deserialize(serializedSignature);
+                        final Verifier verifier = this.verifierFactory.getVerifier(signature);
+                        final boolean verified = verifier.verify(serializedUser, UTF_8, signature);
+                        if (!verified) {
+                            LOGGER.error("Signature verification failed due to invalid signature.");
+                            user = new User(emptyList());
+                        }
+                    } catch (final IllegalArgumentException | SignatureException invalidSignature) {
+                        LOGGER.error("Failed to verify signature", invalidSignature);
                         user = new User(emptyList());
                     }
-                } catch (final IllegalArgumentException | SignatureException invalidSignature) {
-                    LOGGER.error("Failed to verify signature", invalidSignature);
-                    user = new User(emptyList());
                 }
             }
-        }
 
-        containerRequestContext.setSecurityContext(new UserSecurityContext(user));
+            containerRequestContext.setSecurityContext(new UserSecurityContext(user));
+        } else {
+            // Security is disabled (likely running locally), use a fake user account.
+            User user = new User(asList(
+                    new UserAttribute(NAME, "dev"),
+                    new UserAttribute(AUTH, "U"),
+                    new UserAttribute(ROLE, "ANONYMOUS")
+            ));
+            containerRequestContext.setSecurityContext(new UserSecurityContext(user));
+        }
     }
 }

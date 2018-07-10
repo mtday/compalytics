@@ -14,9 +14,9 @@ public class DataSourceBinder extends AbstractBinder {
 
     public DataSourceBinder(Properties properties) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(properties.getProperty("database.url"));
-        config.setUsername(properties.getProperty("database.username"));
-        config.setPassword(properties.getProperty("database.password"));
+        config.setJdbcUrl(properties.getProperty("database.url", "jdbc:h2:mem:compalytics;DB_CLOSE_DELAY=-1"));
+        config.setUsername(properties.getProperty("database.username", "sa"));
+        config.setPassword(properties.getProperty("database.password", "sa"));
         config.setMinimumIdle(1);
         config.setMaximumPoolSize(6);
         config.setIdleTimeout(TimeUnit.SECONDS.toMillis(60));
