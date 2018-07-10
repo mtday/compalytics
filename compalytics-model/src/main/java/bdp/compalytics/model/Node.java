@@ -1,5 +1,7 @@
 package bdp.compalytics.model;
 
+import java.util.Objects;
+
 public class Node {
     private String id;
     private String jobId;
@@ -63,5 +65,41 @@ public class Node {
 
     public void setState(NodeState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Node)) {
+            return false;
+        }
+        final Node node = (Node) o;
+        return Objects.equals(getId(), node.getId()) &&
+                Objects.equals(getJobId(), node.getJobId()) &&
+                Objects.equals(getName(), node.getName()) &&
+                Objects.equals(getDescription(), node.getDescription()) &&
+                getType() == node.getType() &&
+                Objects.equals(getClassName(), node.getClassName()) &&
+                getState() == node.getState();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getJobId(), getName(), getDescription(), getType(), getClassName(), getState());
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "id='" + id + '\'' +
+                ", jobId='" + jobId + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", className='" + className + '\'' +
+                ", state=" + state +
+                '}';
     }
 }

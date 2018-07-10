@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{id}")
+@Path("/v1/jobs/{id}")
 @Produces(APPLICATION_JSON)
 public class JobPut {
     private final DaoFactory daoFactory;
@@ -27,7 +27,7 @@ public class JobPut {
     @PUT
     public Response saveJob(@PathParam("id") String id, Job job) {
         job.setId(id);
-        daoFactory.getJobDao().save(job);
+        daoFactory.getJobDao().update(job);
         return Response.accepted(job).build();
     }
 }

@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/edges/{id}")
+@Path("/v1/jobs/{jobId}/edges/{id}")
 @Produces(APPLICATION_JSON)
 public class EdgePut {
     private final DaoFactory daoFactory;
@@ -28,7 +28,7 @@ public class EdgePut {
     public Response saveEdge(@PathParam("jobId") String jobId, @PathParam("id") String id, Edge edge) {
         edge.setJobId(jobId);
         edge.setId(id);
-        daoFactory.getEdgeDao().save(edge);
+        daoFactory.getEdgeDao().update(edge);
         return Response.accepted(edge).build();
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface JobRunDao {
     Optional<JobRun> get(String jobId, String id);
     List<JobRun> getAll(String jobId);
-    void save(JobRun run);
+    void add(JobRun run);
+    void update(JobRun run);
     void delete(String jobId, String id);
 }

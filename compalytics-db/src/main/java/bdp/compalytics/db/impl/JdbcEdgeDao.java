@@ -1,108 +1,57 @@
 package bdp.compalytics.db.impl;
 
-import bdp.compalytics.db.DatabaseException;
 import bdp.compalytics.db.EdgeDao;
 import bdp.compalytics.model.Edge;
-import bdp.compalytics.model.EdgeState;
+import org.jdbi.v3.core.Jdbi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-
-import javax.sql.DataSource;
 
 public class JdbcEdgeDao implements EdgeDao {
-    private final DataSource dataSource;
+    private final Jdbi jdbi;
 
-    public JdbcEdgeDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public JdbcEdgeDao(Jdbi jdbi) {
+        this.jdbi = jdbi;
     }
-
-    private Function<ResultSet, Edge> fromResultSet = (rs) -> {
-        try {
-            Edge edge = new Edge();
-            edge.setId(rs.getString("id"));
-            edge.setJobId(rs.getString("job_id"));
-            edge.setBeginNode(rs.getString("begin_node"));
-            edge.setEndNode(rs.getString("end_node"));
-            edge.setLabel(rs.getString("label"));
-            edge.setState(EdgeState.valueOf(rs.getString("state")));
-            return edge;
-        } catch (SQLException sqlException) {
-            throw new DatabaseException("Failed to retrieve edge from result set", sqlException);
-        }
-    };
 
     @Override
     public Optional<Edge> get(String jobId, String id) {
-        String sql = "SELECT * FROM edges WHERE job_id = ? AND id = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, jobId);
-            ps.setString(2, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(fromResultSet.apply(rs));
-                }
-            }
-        } catch (SQLException sqlException) {
-            throw new DatabaseException("Failed to retrieve edge by id", sqlException);
-        }
-        return Optional.empty();
+        return jdbi.withHandle(handle -> handle
+                .createQuery("SELECT * FROM edges WHERE job_id = :jobId AND id = :id")
+                .bind("jobId", jobId)
+                .bind("id", id)
+                .mapToBean(Edge.class)
+                .findFirst());
     }
 
     @Override
     public List<Edge> getAll(String jobId) {
-        String sql = "SELECT * FROM edges WHERE job_id = ?";
-        List<Edge> edges = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, jobId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    edges.add(fromResultSet.apply(rs));
-                }
-            }
-        } catch (SQLException sqlException) {
-            throw new DatabaseException("Failed to retrieve edges for job id", sqlException);
-        }
-        return edges;
+        return jdbi.withHandle(handle -> handle
+                .createQuery("SELECT * FROM edges WHERE job_id = :jobId")
+                .bind("jobId", jobId)
+                .mapToBean(Edge.class)
+                .list());
     }
 
     @Override
-    public void save(Edge edge) {
+    public void add(Edge edge) {
         String sql = "INSERT INTO edges (id, job_id, begin_node, end_node, label, state) "
-                + "VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT ON CONSTRAINT edges_pk "
-                + "DO UPDATE SET label = EXCLUDED.label, state = EXCLUDED.state";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, edge.getId());
-            ps.setString(2, edge.getJobId());
-            ps.setString(3, edge.getBeginNode());
-            ps.setString(4, edge.getEndNode());
-            ps.setString(5, edge.getLabel());
-            ps.setString(6, edge.getState().name());
-            ps.executeUpdate();
-        } catch (SQLException sqlException) {
-            throw new DatabaseException("Failed to save edge", sqlException);
-        }
+                + "VALUES (:id, :jobId, :beginNode, :endNode, :label, :state)";
+        jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(edge).execute());
+    }
+
+    @Override
+    public void update(Edge edge) {
+        String sql = "UPDATE edges SET label = :label, state = :state WHERE job_id = :jobId AND id = :id";
+        jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(edge).execute());
     }
 
     @Override
     public void delete(String jobId, String id) {
-        String sql = "DELETE FROM edges WHERE job_id = ? AND id = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, jobId);
-            ps.setString(2, id);
-            ps.executeUpdate();
-        } catch (SQLException sqlException) {
-            throw new DatabaseException("Failed to delete edge", sqlException);
-        }
+        jdbi.withHandle(handle -> handle
+                .createUpdate("DELETE FROM edges WHERE job_id = :jobId AND id = :id")
+                .bind("jobId", jobId)
+                .bind("id", id)
+                .execute());
     }
 }

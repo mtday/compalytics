@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface NodeRunDao {
     Optional<NodeRun> get(String runId, String nodeId);
     List<NodeRun> getAll(String runId);
-    void save(NodeRun run);
+    void add(NodeRun run);
+    void update(NodeRun run);
     void delete(String runId, String nodeId);
 }

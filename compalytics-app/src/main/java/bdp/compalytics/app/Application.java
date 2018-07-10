@@ -12,7 +12,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
 
-@ApplicationPath("/*")
+@ApplicationPath("/api/*")
 public class Application extends ResourceConfig {
     public Application() {
         registerDependencyInjectionObjects();

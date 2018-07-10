@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface NodeDao {
     Optional<Node> get(String jobId, String id);
     List<Node> getAll(String jobId);
-    void save(Node node);
+    void add(Node node);
+    void update(Node node);
     void delete(String jobId, String id);
 }

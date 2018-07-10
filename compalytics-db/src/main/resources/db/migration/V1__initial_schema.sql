@@ -1,8 +1,8 @@
 
 CREATE TABLE jobs (
-    id                   TEXT NOT NULL,
-    name                 TEXT NOT NULL,
-    state                TEXT NOT NULL,
+    id                   VARCHAR(20) NOT NULL,
+    name                 VARCHAR(200) NOT NULL,
+    state                VARCHAR(20) NOT NULL,
 
     CONSTRAINT jobs_pk PRIMARY KEY (id)
 );
@@ -12,13 +12,13 @@ CREATE INDEX idx_jobs_state ON jobs (state);
 
 
 CREATE TABLE nodes (
-    id                   TEXT NOT NULL,
-    job_id               TEXT NOT NULL,
-    name                 TEXT NOT NULL,
+    id                   VARCHAR(20) NOT NULL,
+    job_id               VARCHAR(20) NOT NULL,
+    name                 VARCHAR(200) NOT NULL,
     description          TEXT,
-    type                 TEXT NOT NULL,
-    class_name           TEXT NOT NULL,
-    state                TEXT NOT NULL,
+    type                 VARCHAR(20) NOT NULL,
+    class_name           VARCHAR(200) NOT NULL,
+    state                VARCHAR(20) NOT NULL,
 
     CONSTRAINT nodes_pk PRIMARY KEY (id),
     CONSTRAINT nodes_fk_job_id FOREIGN KEY (job_id) REFERENCES jobs (id) ON DELETE CASCADE
@@ -26,12 +26,12 @@ CREATE TABLE nodes (
 
 
 CREATE TABLE edges (
-    id                   TEXT NOT NULL,
-    job_id               TEXT NOT NULL,
-    begin_node           TEXT NOT NULL,
-    end_node             TEXT NOT NULL,
-    label                TEXT NOT NULL,
-    state                TEXT NOT NULL,
+    id                   VARCHAR(20) NOT NULL,
+    job_id               VARCHAR(20) NOT NULL,
+    begin_node           VARCHAR(20) NOT NULL,
+    end_node             VARCHAR(20) NOT NULL,
+    label                VARCHAR(200) NOT NULL,
+    state                VARCHAR(20) NOT NULL,
 
     CONSTRAINT edges_pk PRIMARY KEY (id),
     CONSTRAINT edges_fk_job_id FOREIGN KEY (job_id) REFERENCES jobs (id) ON DELETE CASCADE,
@@ -41,11 +41,11 @@ CREATE TABLE edges (
 
 
 CREATE TABLE runs (
-    id                   TEXT NOT NULL,
-    job_id               TEXT NOT NULL,
-    user_id              TEXT NOT NULL,
-    state                TEXT NOT NULL,
-    auths                TEXT NOT NULL,
+    id                   VARCHAR(20) NOT NULL,
+    job_id               VARCHAR(20) NOT NULL,
+    user_id              VARCHAR(20) NOT NULL,
+    state                VARCHAR(20) NOT NULL,
+    auths                TEXT,
     start                TIMESTAMP NOT NULL,
     stop                 TIMESTAMP,
 
@@ -55,9 +55,9 @@ CREATE TABLE runs (
 
 
 CREATE TABLE node_runs (
-    run_id               TEXT NOT NULL,
-    node_id              TEXT NOT NULL,
-    state                TEXT NOT NULL,
+    run_id               VARCHAR(20) NOT NULL,
+    node_id              VARCHAR(20) NOT NULL,
+    state                VARCHAR(20) NOT NULL,
     start                TIMESTAMP NOT NULL,
     stop                 TIMESTAMP,
 

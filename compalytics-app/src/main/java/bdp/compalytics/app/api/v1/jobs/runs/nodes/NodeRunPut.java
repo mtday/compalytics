@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/runs/{runId}/nodes/{nodeId}")
+@Path("/v1/jobs/{jobId}/runs/{runId}/nodes/{nodeId}")
 @Produces(APPLICATION_JSON)
 public class NodeRunPut {
     private final DaoFactory daoFactory;
@@ -27,7 +27,7 @@ public class NodeRunPut {
     @PUT
     public Response saveRun(@PathParam("jobId") String jobId, @PathParam("runId") String runId, NodeRun run) {
         run.setRunId(runId);
-        daoFactory.getNodeRunDao().save(run);
+        daoFactory.getNodeRunDao().update(run);
         return Response.accepted(run).build();
     }
 }

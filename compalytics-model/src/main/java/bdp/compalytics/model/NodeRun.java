@@ -1,6 +1,7 @@
 package bdp.compalytics.model;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class NodeRun {
     private String runId;
@@ -47,5 +48,37 @@ public class NodeRun {
 
     public void setStop(Instant stop) {
         this.stop = stop;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof NodeRun)) {
+            return false;
+        }
+        final NodeRun nodeRun = (NodeRun) o;
+        return Objects.equals(getRunId(), nodeRun.getRunId()) &&
+                Objects.equals(getNodeId(), nodeRun.getNodeId()) &&
+                getState() == nodeRun.getState() &&
+                Objects.equals(getStart(), nodeRun.getStart()) &&
+                Objects.equals(getStop(), nodeRun.getStop());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRunId(), getNodeId(), getState(), getStart(), getStop());
+    }
+
+    @Override
+    public String toString() {
+        return "NodeRun{" +
+                "runId='" + runId + '\'' +
+                ", nodeId='" + nodeId + '\'' +
+                ", state=" + state +
+                ", start=" + start +
+                ", stop=" + stop +
+                '}';
     }
 }

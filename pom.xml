@@ -21,11 +21,13 @@
     <properties>
         <citadel.version>1.0.3</citadel.version>
         <flyway.version>4.1.2</flyway.version>
+        <h2.version>1.4.197</h2.version>
         <hikari.version>2.7.8</hikari.version>
         <hk2.version>2.5.0-b42</hk2.version>
         <javax-annotation.version>1.2</javax-annotation.version>
         <javax-inject.version>1</javax-inject.version>
         <javax-ws-rs.version>2.1</javax-ws-rs.version>
+        <jdbi.version>3.3.0</jdbi.version>
         <jersey.version>2.26</jersey.version>
         <junit.version>4.12</junit.version>
         <mockito-core.version>2.6.2</mockito-core.version>
@@ -152,6 +154,14 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi3-bom</artifactId>
+                <type>pom</type>
+                <version>${jdbi.version}</version>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
@@ -171,6 +181,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

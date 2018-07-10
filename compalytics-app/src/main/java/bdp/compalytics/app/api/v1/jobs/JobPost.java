@@ -20,7 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 @Singleton
-@Path("/api/v1/jobs")
+@Path("/v1/jobs")
 @Produces(APPLICATION_JSON)
 public class JobPost {
     private final DaoFactory daoFactory;
@@ -38,7 +38,7 @@ public class JobPost {
     public Response saveJob(Job job) {
         job.setId(ofNullable(job.getId()).orElseGet(uidSupplier));
         job.setState(ofNullable(job.getState()).orElse(JobState.INACTIVE));
-        daoFactory.getJobDao().save(job);
+        daoFactory.getJobDao().add(job);
 
         URI uri = UriBuilder.fromUri(uriInfo.getBaseUri())
                 .path("api/v1/jobs/{jobId}").build(job.getId());

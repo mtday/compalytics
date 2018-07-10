@@ -20,7 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/runs/{runId}/nodes")
+@Path("/v1/jobs/{jobId}/runs/{runId}/nodes")
 @Produces(APPLICATION_JSON)
 public class NodeRunPost {
     private final DaoFactory daoFactory;
@@ -36,7 +36,7 @@ public class NodeRunPost {
     public Response saveNodeRun(@PathParam("jobId") String jobId, @PathParam("runId") String runId, NodeRun run) {
         run.setRunId(runId);
         run.setState(ofNullable(run.getState()).orElse(RunState.READY));
-        daoFactory.getNodeRunDao().save(run);
+        daoFactory.getNodeRunDao().add(run);
 
         URI uri = UriBuilder.fromUri(uriInfo.getBaseUri())
                 .path("api/v1/jobs/{jobId}/runs/{runId}/nodes/{nodeId}")

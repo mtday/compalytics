@@ -21,7 +21,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/edges")
+@Path("/v1/jobs/{jobId}/edges")
 @Produces(APPLICATION_JSON)
 public class EdgePost {
     private final DaoFactory daoFactory;
@@ -40,7 +40,7 @@ public class EdgePost {
         edge.setJobId(jobId);
         edge.setId(ofNullable(edge.getId()).orElseGet(uidSupplier));
         edge.setState(ofNullable(edge.getState()).orElse(EdgeState.INACTIVE));
-        daoFactory.getEdgeDao().save(edge);
+        daoFactory.getEdgeDao().add(edge);
 
         URI uri = UriBuilder.fromUri(uriInfo.getBaseUri())
                 .path("api/v1/jobs/{jobId}/edges/{edgeId}")

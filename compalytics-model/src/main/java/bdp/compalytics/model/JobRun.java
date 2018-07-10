@@ -1,6 +1,7 @@
 package bdp.compalytics.model;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Set;
 
 public class JobRun {
@@ -66,5 +67,41 @@ public class JobRun {
 
     public void setStop(Instant stop) {
         this.stop = stop;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof JobRun)) {
+            return false;
+        }
+        final JobRun jobRun = (JobRun) o;
+        return Objects.equals(getId(), jobRun.getId()) &&
+                Objects.equals(getJobId(), jobRun.getJobId()) &&
+                Objects.equals(getUserId(), jobRun.getUserId()) &&
+                getState() == jobRun.getState() &&
+                Objects.equals(getAuths(), jobRun.getAuths()) &&
+                Objects.equals(getStart(), jobRun.getStart()) &&
+                Objects.equals(getStop(), jobRun.getStop());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getJobId(), getUserId(), getState(), getAuths(), getStart(), getStop());
+    }
+
+    @Override
+    public String toString() {
+        return "JobRun{" +
+                "id='" + id + '\'' +
+                ", jobId='" + jobId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", state=" + state +
+                ", auths=" + auths +
+                ", start=" + start +
+                ", stop=" + stop +
+                '}';
     }
 }

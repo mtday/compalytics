@@ -16,7 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/version")
+@Path("/v1/version")
 @Produces(APPLICATION_JSON)
 public class VersionGet {
     private final Properties properties;

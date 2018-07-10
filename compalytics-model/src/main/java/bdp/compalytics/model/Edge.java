@@ -1,5 +1,7 @@
 package bdp.compalytics.model;
 
+import java.util.Objects;
+
 public class Edge {
     private String id;
     private String jobId;
@@ -54,5 +56,39 @@ public class Edge {
 
     public void setState(EdgeState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Edge)) {
+            return false;
+        }
+        final Edge edge = (Edge) o;
+        return Objects.equals(getId(), edge.getId()) &&
+                Objects.equals(getJobId(), edge.getJobId()) &&
+                Objects.equals(getBeginNode(), edge.getBeginNode()) &&
+                Objects.equals(getEndNode(), edge.getEndNode()) &&
+                Objects.equals(getLabel(), edge.getLabel()) &&
+                getState() == edge.getState();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getJobId(), getBeginNode(), getEndNode(), getLabel(), getState());
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "id='" + id + '\'' +
+                ", jobId='" + jobId + '\'' +
+                ", beginNode='" + beginNode + '\'' +
+                ", endNode='" + endNode + '\'' +
+                ", label='" + label + '\'' +
+                ", state=" + state +
+                '}';
     }
 }

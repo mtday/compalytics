@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface EdgeDao {
     Optional<Edge> get(String jobId, String id);
     List<Edge> getAll(String jobId);
-    void save(Edge edge);
+    void add(Edge edge);
+    void update(Edge edge);
     void delete(String jobId, String id);
 }

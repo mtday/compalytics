@@ -15,7 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/api/v1/jobs/{jobId}/nodes")
+@Path("/v1/jobs/{jobId}/nodes")
 @Produces(APPLICATION_JSON)
 public class NodesGet {
     private final DaoFactory daoFactory;

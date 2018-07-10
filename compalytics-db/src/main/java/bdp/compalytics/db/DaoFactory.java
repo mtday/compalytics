@@ -6,14 +6,15 @@ import bdp.compalytics.db.impl.JdbcJobRunDao;
 import bdp.compalytics.db.impl.JdbcNodeDao;
 import bdp.compalytics.db.impl.JdbcNodeRunDao;
 import org.flywaydb.core.Flyway;
+import org.jdbi.v3.core.Jdbi;
 
 import javax.sql.DataSource;
 
 public class DaoFactory {
-    private final DataSource dataSource;
+    private final Jdbi jdbi;
 
     public DaoFactory(DataSource dataSource) {
-        this.dataSource = dataSource;
+        jdbi = Jdbi.create(dataSource);
 
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
@@ -21,22 +22,22 @@ public class DaoFactory {
     }
 
     public JobDao getJobDao() {
-        return new JdbcJobDao(dataSource);
+        return new JdbcJobDao(jdbi);
     }
 
     public NodeDao getNodeDao() {
-        return new JdbcNodeDao(dataSource);
+        return new JdbcNodeDao(jdbi);
     }
 
     public EdgeDao getEdgeDao() {
-        return new JdbcEdgeDao(dataSource);
+        return new JdbcEdgeDao(jdbi);
     }
 
     public JobRunDao getJobRunDao() {
-        return new JdbcJobRunDao(dataSource);
+        return new JdbcJobRunDao(jdbi);
     }
 
     public NodeRunDao getNodeRunDao() {
-        return new JdbcNodeRunDao(dataSource);
+        return new JdbcNodeRunDao(jdbi);
     }
 }

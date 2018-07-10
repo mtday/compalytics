@@ -13,8 +13,11 @@ import java.util.List;
 public class UserPrincipal  extends User implements Principal {
     private static final long serialVersionUID = 1L;
 
+    private final User user;
+
     public UserPrincipal(User user) {
         super(user.getAttributes());
+        this.user = user;
     }
 
     @Override
@@ -23,6 +26,10 @@ public class UserPrincipal  extends User implements Principal {
                 .map(UserAttribute::getValue)
                 .findFirst()
                 .orElse("-");
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getCombinedAuths() {
