@@ -33,6 +33,7 @@
         <mockito-core.version>2.6.2</mockito-core.version>
         <postgresql.version>9.4.1212</postgresql.version>
         <slf4j.version>1.7.10</slf4j.version>
+        <spark.version>2.1.0</spark.version>
 
         <rda.personal.suffix />
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -109,6 +110,27 @@
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
                 <version>${javax-ws-rs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-core_2.11</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-repl_2.11</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-sql_2.11</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-yarn_2.11</artifactId>
+                <version>${spark.version}</version>
             </dependency>
 
             <dependency>

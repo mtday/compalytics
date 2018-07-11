@@ -65,13 +65,14 @@ public class JdbcJobRunDaoTest {
         run.setStop(Instant.now());
         run.setState(RunState.IN_PROGRESS);
 
-        runDao.update(run);
+        assertTrue(runDao.update(run));
 
         Optional<JobRun> updated = runDao.get(job.getId(), run.getId());
         assertTrue(updated.isPresent());
         assertEquals(run, updated.get());
 
-        runDao.delete(job.getId(), run.getId());
+        assertTrue(runDao.delete(job.getId(), run.getId()));
+        assertFalse(runDao.delete(job.getId(), "missing"));
 
         assertFalse(runDao.get(job.getId(), run.getId()).isPresent());
         assertTrue(runDao.getAll(job.getId()).isEmpty());

@@ -33,7 +33,8 @@ public class NodeRunPost {
     }
 
     @POST
-    public Response saveNodeRun(@PathParam("jobId") String jobId, @PathParam("runId") String runId, NodeRun run) {
+    public Response addNodeRun(@PathParam("jobId") String jobId, @PathParam("runId") String runId, NodeRun run) {
+        run.setJobId(jobId);
         run.setRunId(runId);
         run.setState(ofNullable(run.getState()).orElse(RunState.READY));
         daoFactory.getNodeRunDao().add(run);

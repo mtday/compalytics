@@ -65,13 +65,14 @@ public class JdbcNodeDaoTest {
         node.setDescription("updated");
         node.setState(NodeState.RUNNING);
 
-        nodeDao.update(node);
+        assertTrue(nodeDao.update(node));
 
         Optional<Node> updated = nodeDao.get(job.getId(), node.getId());
         assertTrue(updated.isPresent());
         assertEquals(node, updated.get());
 
-        nodeDao.delete(job.getId(), node.getId());
+        assertTrue(nodeDao.delete(job.getId(), node.getId()));
+        assertFalse(nodeDao.delete(job.getId(), "missing"));
 
         assertFalse(nodeDao.get(job.getId(), node.getId()).isPresent());
         assertTrue(nodeDao.getAll(job.getId()).isEmpty());

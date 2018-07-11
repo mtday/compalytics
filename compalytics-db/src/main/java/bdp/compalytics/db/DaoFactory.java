@@ -5,6 +5,7 @@ import bdp.compalytics.db.impl.JdbcJobDao;
 import bdp.compalytics.db.impl.JdbcJobRunDao;
 import bdp.compalytics.db.impl.JdbcNodeDao;
 import bdp.compalytics.db.impl.JdbcNodeRunDao;
+import bdp.compalytics.db.impl.JdbcSessionDao;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 
@@ -39,5 +40,9 @@ public class DaoFactory {
 
     public NodeRunDao getNodeRunDao() {
         return new JdbcNodeRunDao(jdbi);
+    }
+
+    public SessionDao getSessionDao() {
+        return new JdbcSessionDao(jdbi);
     }
 }

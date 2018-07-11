@@ -89,13 +89,14 @@ public class JdbcEdgeDaoTest {
         edge.setLabel("updated");
         edge.setState(EdgeState.ACTIVE);
 
-        edgeDao.update(edge);
+        assertTrue(edgeDao.update(edge));
 
         Optional<Edge> updated = edgeDao.get(job.getId(), edge.getId());
         assertTrue(updated.isPresent());
         assertEquals(edge, updated.get());
 
-        edgeDao.delete(job.getId(), edge.getId());
+        assertTrue(edgeDao.delete(job.getId(), edge.getId()));
+        assertFalse(edgeDao.delete(job.getId(), "missing"));
 
         assertFalse(edgeDao.get(job.getId(), edge.getId()).isPresent());
         assertTrue(edgeDao.getAll(job.getId()).isEmpty());

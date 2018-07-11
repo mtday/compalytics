@@ -36,7 +36,7 @@ public class EdgePost {
     }
 
     @POST
-    public Response saveEdge(@PathParam("jobId") String jobId, Edge edge) {
+    public Response addEdge(@PathParam("jobId") String jobId, Edge edge) {
         edge.setJobId(jobId);
         edge.setId(ofNullable(edge.getId()).orElseGet(uidSupplier));
         edge.setState(ofNullable(edge.getState()).orElse(EdgeState.INACTIVE));

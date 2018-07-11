@@ -27,6 +27,6 @@ public class NodeRunsGet {
 
     @GET
     public Response getNodeRuns(@PathParam("jobId") String jobId, @PathParam("runId") String runId) {
-        return ok().entity(daoFactory.getNodeRunDao().getAll(runId)).type(APPLICATION_JSON_TYPE).build();
+        return ok().entity(daoFactory.getNodeRunDao().getAll(jobId, runId)).type(APPLICATION_JSON_TYPE).build();
     }
 }

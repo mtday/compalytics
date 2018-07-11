@@ -17,7 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Singleton
-@Path("/v1/jobs/{jobId}/nodes/{id}")
+@Path("/v1/jobs/{jobId}/nodes/{nodeId}")
 @Produces(APPLICATION_JSON)
 public class NodeGet {
     private final DaoFactory daoFactory;
@@ -28,9 +28,9 @@ public class NodeGet {
     }
 
     @GET
-    public Response getNode(@PathParam("jobId") String jobId, @PathParam("id") String id) {
-        return daoFactory.getNodeDao().get(jobId, id)
+    public Response getNode(@PathParam("jobId") String jobId, @PathParam("nodeId") String nodeId) {
+        return daoFactory.getNodeDao().get(jobId, nodeId)
                 .map(node -> ok().entity(node).type(APPLICATION_JSON_TYPE).build())
-                .orElseThrow(() -> new NotFoundException(format("Node with id %s not found for job %s", id, jobId)));
+                .orElseThrow(() -> new NotFoundException(format("Node with id %s not found for job %s", nodeId, jobId)));
     }
 }

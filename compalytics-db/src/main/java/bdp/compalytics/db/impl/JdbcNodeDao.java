@@ -15,11 +15,11 @@ public class JdbcNodeDao implements NodeDao {
     }
 
     @Override
-    public Optional<Node> get(String jobId, String id) {
+    public Optional<Node> get(String jobId, String nodeId) {
         return jdbi.withHandle(handle -> handle
-                .createQuery("SELECT * FROM nodes WHERE job_id = :jobId AND id = :id")
+                .createQuery("SELECT * FROM nodes WHERE job_id = :jobId AND id = :nodeId")
                 .bind("jobId", jobId)
-                .bind("id", id)
+                .bind("nodeId", nodeId)
                 .mapToBean(Node.class)
                 .findFirst());
     }
@@ -41,18 +41,18 @@ public class JdbcNodeDao implements NodeDao {
     }
 
     @Override
-    public void update(Node node) {
+    public boolean update(Node node) {
         String sql = "UPDATE nodes SET name = :name, description = :description, type = :type, "
                 + "class_name = :className, state = :state WHERE job_id = :jobId AND id = :id";
-        jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(node).execute());
+        return jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(node).execute()) > 0;
     }
 
     @Override
-    public void delete(String jobId, String id) {
-        jdbi.withHandle(handle -> handle
-                .createUpdate("DELETE FROM nodes WHERE job_id = :jobId AND id = :id")
+    public boolean delete(String jobId, String nodeId) {
+        return jdbi.withHandle(handle -> handle
+                .createUpdate("DELETE FROM nodes WHERE job_id = :jobId AND id = :nodeId")
                 .bind("jobId", jobId)
-                .bind("id", id)
-                .execute());
+                .bind("nodeId", nodeId)
+                .execute()) > 0;
     }
 }

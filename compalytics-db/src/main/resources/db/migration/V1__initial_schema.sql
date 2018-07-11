@@ -43,7 +43,7 @@ CREATE TABLE edges (
 CREATE TABLE runs (
     id                   VARCHAR(20) NOT NULL,
     job_id               VARCHAR(20) NOT NULL,
-    user_id              VARCHAR(20) NOT NULL,
+    user_id              VARCHAR(80) NOT NULL,
     state                VARCHAR(20) NOT NULL,
     auths                TEXT,
     start                TIMESTAMP NOT NULL,
@@ -55,6 +55,7 @@ CREATE TABLE runs (
 
 
 CREATE TABLE node_runs (
+    job_id               VARCHAR(20) NOT NULL,
     run_id               VARCHAR(20) NOT NULL,
     node_id              VARCHAR(20) NOT NULL,
     state                VARCHAR(20) NOT NULL,
@@ -62,8 +63,19 @@ CREATE TABLE node_runs (
     stop                 TIMESTAMP,
 
     CONSTRAINT node_runs_pk PRIMARY KEY (run_id, node_id),
+    CONSTRAINT node_runs_fk_job_id FOREIGN KEY (job_id) REFERENCES jobs (id) ON DELETE CASCADE,
     CONSTRAINT node_runs_fk_run_id FOREIGN KEY (run_id) REFERENCES runs (id) ON DELETE CASCADE,
     CONSTRAINT node_runs_fk_node_id FOREIGN KEY (node_id) REFERENCES nodes (id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE sessions (
+    id                   VARCHAR(20) NOT NULL,
+    name                 VARCHAR(200) NOT NULL,
+    user_id              VARCHAR(80) NOT NULL,
+    creation             TIMESTAMP NOT NULL,
+    expiration           TIMESTAMP NOT NULL,
+
+    CONSTRAINT sessions_pk PRIMARY KEY (id)
+);
 

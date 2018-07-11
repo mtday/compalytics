@@ -76,6 +76,7 @@ public class JdbcNodeRunDaoTest {
         nodeDao.add(node);
 
         NodeRun nodeRun = new NodeRun();
+        nodeRun.setJobId(job.getId());
         nodeRun.setRunId(jobRun.getId());
         nodeRun.setNodeId(node.getId());
         nodeRun.setStart(Instant.now());
@@ -83,26 +84,27 @@ public class JdbcNodeRunDaoTest {
 
         nodeRunDao.add(nodeRun);
 
-        Optional<NodeRun> get = nodeRunDao.get(jobRun.getId(), node.getId());
+        Optional<NodeRun> get = nodeRunDao.get(job.getId(), jobRun.getId(), node.getId());
         assertTrue(get.isPresent());
         assertEquals(nodeRun, get.get());
 
-        List<NodeRun> getAll = nodeRunDao.getAll(jobRun.getId());
+        List<NodeRun> getAll = nodeRunDao.getAll(job.getId(), jobRun.getId());
         assertEquals(1, getAll.size());
         assertTrue(getAll.contains(nodeRun));
 
         nodeRun.setStop(Instant.now());
         nodeRun.setState(RunState.IN_PROGRESS);
 
-        nodeRunDao.update(nodeRun);
+        assertTrue(nodeRunDao.update(nodeRun));
 
-        Optional<NodeRun> updated = nodeRunDao.get(jobRun.getId(), nodeRun.getNodeId());
+        Optional<NodeRun> updated = nodeRunDao.get(job.getId(), jobRun.getId(), nodeRun.getNodeId());
         assertTrue(updated.isPresent());
         assertEquals(nodeRun, updated.get());
 
-        nodeRunDao.delete(jobRun.getId(), nodeRun.getNodeId());
+        assertTrue(nodeRunDao.delete(job.getId(), jobRun.getId(), nodeRun.getNodeId()));
+        assertFalse(nodeRunDao.delete(job.getId(), jobRun.getId(), "missing"));
 
-        assertFalse(nodeRunDao.get(jobRun.getId(), nodeRun.getNodeId()).isPresent());
-        assertTrue(nodeRunDao.getAll(jobRun.getId()).isEmpty());
+        assertFalse(nodeRunDao.get(job.getId(), jobRun.getId(), nodeRun.getNodeId()).isPresent());
+        assertTrue(nodeRunDao.getAll(job.getId(), jobRun.getId()).isEmpty());
     }
 }

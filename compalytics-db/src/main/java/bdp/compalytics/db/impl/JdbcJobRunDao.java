@@ -41,11 +41,11 @@ public class JdbcJobRunDao implements JobRunDao {
     }
 
     @Override
-    public Optional<JobRun> get(String jobId, String id) {
+    public Optional<JobRun> get(String jobId, String runId) {
         return jdbi.withHandle(handle -> handle
-                .createQuery("SELECT * FROM runs WHERE job_id = :jobId AND id = :id")
+                .createQuery("SELECT * FROM runs WHERE job_id = :jobId AND id = :runId")
                 .bind("jobId", jobId)
-                .bind("id", id)
+                .bind("runId", runId)
                 .map(new JobRunRowMapper())
                 .findFirst());
     }
@@ -76,22 +76,22 @@ public class JdbcJobRunDao implements JobRunDao {
     }
 
     @Override
-    public void update(JobRun run) {
-        String sql = "UPDATE runs SET state = :state, stop = :stop WHERE job_id = :jobId AND id = :id";
-        jdbi.withHandle(handle -> handle.createUpdate(sql)
+    public boolean update(JobRun run) {
+        String sql = "UPDATE runs SET state = :state, stop = :stop WHERE job_id = :jobId AND id = :runId";
+        return jdbi.withHandle(handle -> handle.createUpdate(sql)
                 .bind("state", run.getState())
                 .bind("stop", run.getStop())
                 .bind("jobId", run.getJobId())
-                .bind("id", run.getId())
-                .execute());
+                .bind("runId", run.getId())
+                .execute()) > 0;
     }
 
     @Override
-    public void delete(String jobId, String id) {
-        jdbi.withHandle(handle -> handle
-                .createUpdate("DELETE FROM runs WHERE job_id = :jobId AND id = :id")
+    public boolean delete(String jobId, String runId) {
+        return jdbi.withHandle(handle -> handle
+                .createUpdate("DELETE FROM runs WHERE job_id = :jobId AND id = :runId")
                 .bind("jobId", jobId)
-                .bind("id", id)
-                .execute());
+                .bind("runId", runId)
+                .execute()) > 0;
     }
 }

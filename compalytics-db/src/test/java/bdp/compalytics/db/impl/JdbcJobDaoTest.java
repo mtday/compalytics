@@ -46,13 +46,14 @@ public class JdbcJobDaoTest {
         job.setName("updated");
         job.setState(JobState.RUNNING);
 
-        jobDao.update(job);
+        assertTrue(jobDao.update(job));
 
         Optional<Job> updated = jobDao.get(job.getId());
         assertTrue(updated.isPresent());
         assertEquals(job, updated.get());
 
-        jobDao.delete(job.getId());
+        assertTrue(jobDao.delete(job.getId()));
+        assertFalse(jobDao.delete("missing"));
 
         assertFalse(jobDao.get(job.getId()).isPresent());
         assertTrue(jobDao.getAll().isEmpty());

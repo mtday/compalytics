@@ -4,11 +4,20 @@ import java.time.Instant;
 import java.util.Objects;
 
 public class NodeRun {
+    private String jobId;
     private String runId;
     private String nodeId;
     private RunState state;
     private Instant start;
     private Instant stop;
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
 
     public String getRunId() {
         return runId;
@@ -59,7 +68,8 @@ public class NodeRun {
             return false;
         }
         final NodeRun nodeRun = (NodeRun) o;
-        return Objects.equals(getRunId(), nodeRun.getRunId()) &&
+        return Objects.equals(getJobId(), nodeRun.getJobId()) &&
+                Objects.equals(getRunId(), nodeRun.getRunId()) &&
                 Objects.equals(getNodeId(), nodeRun.getNodeId()) &&
                 getState() == nodeRun.getState() &&
                 Objects.equals(getStart(), nodeRun.getStart()) &&
@@ -68,13 +78,14 @@ public class NodeRun {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRunId(), getNodeId(), getState(), getStart(), getStop());
+        return Objects.hash(getJobId(), getRunId(), getNodeId(), getState(), getStart(), getStop());
     }
 
     @Override
     public String toString() {
         return "NodeRun{" +
-                "runId='" + runId + '\'' +
+                "jobId='" + jobId + '\'' +
+                ", runId='" + runId + '\'' +
                 ", nodeId='" + nodeId + '\'' +
                 ", state=" + state +
                 ", start=" + start +

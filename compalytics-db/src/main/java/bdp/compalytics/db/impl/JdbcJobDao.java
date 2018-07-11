@@ -15,10 +15,10 @@ public class JdbcJobDao implements JobDao {
     }
 
     @Override
-    public Optional<Job> get(String id) {
+    public Optional<Job> get(String jobId) {
         return jdbi.withHandle(handle -> handle
-                .createQuery("SELECT * FROM jobs WHERE id = :id")
-                .bind("id", id)
+                .createQuery("SELECT * FROM jobs WHERE id = :jobId")
+                .bind("jobId", jobId)
                 .mapToBean(Job.class)
                 .findFirst());
     }
@@ -38,16 +38,16 @@ public class JdbcJobDao implements JobDao {
     }
 
     @Override
-    public void update(Job job) {
+    public boolean update(Job job) {
         String sql = "UPDATE jobs SET name = :name, state = :state WHERE id = :id";
-        jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(job).execute());
+        return jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(job).execute()) > 0;
     }
 
     @Override
-    public void delete(String id) {
-        jdbi.withHandle(handle -> handle
-                .createUpdate("DELETE FROM jobs WHERE id = :id")
-                .bind("id", id)
-                .execute());
+    public boolean delete(String jobId) {
+        return jdbi.withHandle(handle -> handle
+                .createUpdate("DELETE FROM jobs WHERE id = :jobId")
+                .bind("jobId", jobId)
+                .execute()) > 0;
     }
 }

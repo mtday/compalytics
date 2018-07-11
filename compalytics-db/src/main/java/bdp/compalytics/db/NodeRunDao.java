@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NodeRunDao {
-    Optional<NodeRun> get(String runId, String nodeId);
-    List<NodeRun> getAll(String runId);
+    Optional<NodeRun> get(String jobId, String runId, String nodeId);
+    List<NodeRun> getAll(String jobId, String runId);
     void add(NodeRun run);
-    void update(NodeRun run);
-    void delete(String runId, String nodeId);
+    boolean update(NodeRun run);
+    boolean delete(String jobId, String runId, String nodeId);
 }

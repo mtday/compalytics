@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JobRunDao {
-    Optional<JobRun> get(String jobId, String id);
+    Optional<JobRun> get(String jobId, String runId);
     List<JobRun> getAll(String jobId);
     void add(JobRun run);
-    void update(JobRun run);
-    void delete(String jobId, String id);
+    boolean update(JobRun run);
+    boolean delete(String jobId, String runId);
 }

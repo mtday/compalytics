@@ -15,11 +15,11 @@ public class JdbcEdgeDao implements EdgeDao {
     }
 
     @Override
-    public Optional<Edge> get(String jobId, String id) {
+    public Optional<Edge> get(String jobId, String edgeId) {
         return jdbi.withHandle(handle -> handle
-                .createQuery("SELECT * FROM edges WHERE job_id = :jobId AND id = :id")
+                .createQuery("SELECT * FROM edges WHERE job_id = :jobId AND id = :edgeId")
                 .bind("jobId", jobId)
-                .bind("id", id)
+                .bind("edgeId", edgeId)
                 .mapToBean(Edge.class)
                 .findFirst());
     }
@@ -41,17 +41,17 @@ public class JdbcEdgeDao implements EdgeDao {
     }
 
     @Override
-    public void update(Edge edge) {
+    public boolean update(Edge edge) {
         String sql = "UPDATE edges SET label = :label, state = :state WHERE job_id = :jobId AND id = :id";
-        jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(edge).execute());
+        return jdbi.withHandle(handle -> handle.createUpdate(sql).bindBean(edge).execute()) > 0;
     }
 
     @Override
-    public void delete(String jobId, String id) {
-        jdbi.withHandle(handle -> handle
-                .createUpdate("DELETE FROM edges WHERE job_id = :jobId AND id = :id")
+    public boolean delete(String jobId, String edgeId) {
+        return jdbi.withHandle(handle -> handle
+                .createUpdate("DELETE FROM edges WHERE job_id = :jobId AND id = :edgeId")
                 .bind("jobId", jobId)
-                .bind("id", id)
-                .execute());
+                .bind("edgeId", edgeId)
+                .execute()) > 0;
     }
 }
